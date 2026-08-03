@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstudaJá - Seu site de estudos</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">📚</span>
+                <h1>EstudaJá</h1>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Pesquisar matéria ou assunto..." autocomplete="off">
+                <button id="searchBtn">🔍</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Welcome Section -->
+            <section class="welcome" id="homeSection">
+                <h2>Olá! Pronto para estudar? 🚀</h2>
+                <p>Escolha uma matéria abaixo. O conteúdo está separado por <strong>Ensino Fundamental</strong> e <strong>Ensino Médio</strong>.</p>
+            </section>
+
+            <!-- Subjects Grid -->
+            <section class="subjects" id="subjectsSection">
+                <h2 class="section-title">Matérias</h2>
+                <div class="subjects-grid" id="subjectsGrid">
+                    <!-- Preenchido pelo JavaScript -->
+                </div>
+            </section>
+
+            <!-- Subject Detail (hidden by default) -->
+            <section class="subject-detail" id="subjectDetail" style="display: none;">
+                <button class="back-btn" id="backBtn">← Voltar para as matérias</button>
+                
+                <div class="subject-header">
+                    <span class="subject-icon" id="detailIcon"></span>
+                    <h2 id="detailTitle"></h2>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-level="fundamental">Ensino Fundamental</button>
+                    <button class="tab-btn" data-level="medio">Ensino Médio</button>
+                </div>
+
+                <!-- Content -->
+                <div class="content-area">
+                    <div class="tab-content active" id="fundamentalContent"></div>
+                    <div class="tab-content" id="medioContent"></div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>EstudaJá — Feito para ajudar nos estudos 📖</p>
+            <p class="small">Conteúdo educativo • Fundamental e Médio</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
