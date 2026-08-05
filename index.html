@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EstudaJá — Estude de um jeito inteligente</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- ========== TELA DE LOGIN ========== -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-logo">📚</div>
+      <h1>EstudaJá</h1>
+      <p class="login-sub">Entre para salvar seu progresso</p>
+
+      <div class="login-tabs">
+        <button class="login-tab active" data-tab="entrar" onclick="switchLoginTab('entrar')">Entrar</button>
+        <button class="login-tab" data-tab="criar" onclick="switchLoginTab('criar')">Criar conta</button>
+      </div>
+
+      <div id="formEntrar" class="login-form">
+        <div class="form-group">
+          <label>Nome de usuário</label>
+          <input type="text" id="loginUser" placeholder="Seu nome" autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="loginPass" placeholder="Sua senha" autocomplete="current-password" />
+        </div>
+        <p id="loginError" class="form-error"></p>
+        <button class="login-btn" onclick="doLogin()">Entrar</button>
+      </div>
+
+      <div id="formCriar" class="login-form" style="display:none">
+        <div class="form-group">
+          <label>Nome de usuário</label>
+          <input type="text" id="registerUser" placeholder="Escolha um nome" autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" id="registerPass" placeholder="Crie uma senha" autocomplete="new-password" />
+        </div>
+        <div class="form-group">
+          <label>Confirmar senha</label>
+          <input type="password" id="registerPass2" placeholder="Digite a senha de novo" autocomplete="new-password" />
+        </div>
+        <p id="registerError" class="form-error"></p>
+        <button class="login-btn" onclick="doRegister()">Criar conta</button>
+      </div>
+
+      <p class="login-note">Os dados ficam salvos apenas neste navegador.</p>
+    </div>
+  </div>
+
+  <!-- ========== APP PRINCIPAL ========== -->
+  <div id="app" style="display:none">
+    <header class="header">
+      <div class="container header-inner">
+        <div class="logo" onclick="goHome()">
+          <span class="logo-icon">📚</span>
+          <span class="logo-text">EstudaJá</span>
+        </div>
+
+        <nav class="nav">
+          <button class="nav-btn active" data-section="home" onclick="showSection('home')">Início</button>
+          <button class="nav-btn" data-section="exercicios" onclick="showSection('exercicios')">Exercícios</button>
+          <button class="nav-btn" data-section="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+          <button class="nav-btn" data-section="anotacoes" onclick="showSection('anotacoes')">Anotações</button>
+          <button class="nav-btn" data-section="pomodoro" onclick="showSection('pomodoro')">Pomodoro</button>
+          <button class="nav-btn" data-section="favoritos" onclick="showSection('favoritos')">Favoritos</button>
+          <button class="nav-btn" data-section="perfil" onclick="showSection('perfil')">Perfil</button>
+        </nav>
+
+        <div class="header-right">
+          <div class="streak-badge" id="headerStreak" title="Sequência de estudos">🔥 0</div>
+          <div class="user-badge" id="userBadge">
+            <span id="userNameDisplay">Aluno</span>
+          </div>
+          <button id="themeToggle" class="theme-btn" title="Alternar tema">🌙</button>
+          <button class="logout-btn" onclick="doLogout()" title="Sair">Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- HOME -->
+      <section id="home" class="section active">
+        <div class="hero">
+          <div class="container">
+            <h1>Olá, <span id="heroUserName">Estudante</span>! 👋</h1>
+            <p class="hero-sub">O que você quer estudar hoje?</p>
+
+            <div class="streak-banner" id="streakBanner">
+              <span class="streak-fire">🔥</span>
+              <span id="streakText">Comece a estudar hoje e monte sua sequência!</span>
+            </div>
+
+            <div class="search-wrapper">
+              <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input
+                  type="text"
+                  id="searchInput"
+                  placeholder="Ex: raiz quadrada de 20, 15% de 200, Independência do Brasil..."
+                  autocomplete="off"
+                />
+                <button id="clearSearch" class="clear-btn" style="display:none">✕</button>
+              </div>
+              <div id="suggestions" class="suggestions"></div>
+            </div>
+
+            <div class="quick-tags">
+              <button class="tag" onclick="quickSearch('raiz quadrada de 16')">Raiz quadrada</button>
+              <button class="tag" onclick="quickSearch('15% de 200')">Porcentagem</button>
+              <button class="tag" onclick="quickSearch('equação do primeiro grau')">Equações</button>
+              <button class="tag" onclick="quickSearch('Independência do Brasil')">Independência</button>
+              <button class="tag" onclick="quickSearch('verbo to be')">Verbo to be</button>
+              <button class="tag" onclick="quickSearch('fotossíntese')">Fotossíntese</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="container">
+          <div id="resultsArea" class="results-area"></div>
+
+          <div id="categoriesArea">
+            <h2 class="section-title">Categorias</h2>
+            <div class="categories-grid" id="categoriesGrid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXERCÍCIOS -->
+      <section id="exercicios" class="section">
+        <div class="container">
+          <div id="exerciseHome">
+            <h2 class="section-title">Exercícios</h2>
+            <p class="section-desc">Escolha um tema e pratique com correção automática. Filtre por nível de dificuldade.</p>
+
+            <div class="exercise-filters">
+              <button class="filter-btn active" data-filter="all">Todos</button>
+              <button class="filter-btn" data-filter="matematica">Matemática</button>
+              <button class="filter-btn" data-filter="portugues">Português</button>
+              <button class="filter-btn" data-filter="historia">História</button>
+              <button class="filter-btn" data-filter="ciencias">Ciências</button>
+              <button class="filter-btn" data-filter="ingles">Inglês</button>
+            </div>
+
+            <div class="level-filters">
+              <button class="level-btn active" data-level="all">Todos níveis</button>
+              <button class="level-btn level-facil" data-level="facil">Fácil</button>
+              <button class="level-btn level-medio" data-level="medio">Médio</button>
+              <button class="level-btn level-dificil" data-level="dificil">Difícil</button>
+            </div>
+
+            <div id="exerciseList" class="exercise-list"></div>
+          </div>
+
+          <div id="quizArea" style="display:none">
+            <div class="quiz-header">
+              <button class="back-btn" onclick="closeQuiz()">← Voltar</button>
+              <div class="quiz-progress">
+                <span id="quizCounter">1 / 5</span>
+                <div class="progress-bar"><div id="quizBar" class="progress-fill"></div></div>
+              </div>
+            </div>
+            <div id="quizContent"></div>
+            <div id="quizResult" class="quiz-result" style="display:none"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FLASHCARDS -->
+      <section id="flashcards" class="section">
+        <div class="container">
+          <div id="flashHome">
+            <h2 class="section-title">Flashcards</h2>
+            <p class="section-desc">Memorize com cartões de pergunta e resposta. Ótimo para fórmulas, datas e vocabulário.</p>
+
+            <div class="flash-actions">
+              <button class="primary-btn" onclick="showCreateFlash()">+ Criar flashcard</button>
+            </div>
+
+            <div class="exercise-filters" id="flashCatFilters">
+              <button class="filter-btn active" data-flashcat="all">Todos</button>
+              <button class="filter-btn" data-flashcat="matematica">Matemática</button>
+              <button class="filter-btn" data-flashcat="portugues">Português</button>
+              <button class="filter-btn" data-flashcat="historia">História</button>
+              <button class="filter-btn" data-flashcat="ciencias">Ciências</button>
+              <button class="filter-btn" data-flashcat="ingles">Inglês</button>
+              <button class="filter-btn" data-flashcat="meus">Meus cartões</button>
+            </div>
+
+            <div id="flashDeckList" class="exercise-list"></div>
+          </div>
+
+          <div id="flashStudy" style="display:none">
+            <div class="quiz-header">
+              <button class="back-btn" onclick="closeFlashStudy()">← Voltar</button>
+              <div class="quiz-progress">
+                <span id="flashCounter">1 / 1</span>
+              </div>
+            </div>
+            <div class="flashcard-container" id="flashCardBox">
+              <div class="flashcard" id="flashCard" onclick="flipFlash()">
+                <div class="flash-front" id="flashFront"></div>
+                <div class="flash-back" id="flashBack"></div>
+              </div>
+            </div>
+            <div class="flash-controls">
+              <button class="flash-btn know-no" onclick="rateFlash(false)">😕 Não sei</button>
+              <button class="flash-btn know-yes" onclick="rateFlash(true)">😊 Sei!</button>
+            </div>
+            <p class="flash-hint">Clique no cartão para virar</p>
+          </div>
+
+          <div id="flashCreate" style="display:none">
+            <div class="quiz-header">
+              <button class="back-btn" onclick="closeFlashCreate()">← Voltar</button>
+            </div>
+            <div class="note-form-card">
+              <h3>Novo Flashcard</h3>
+              <div class="form-group">
+                <label>Pergunta (frente)</label>
+                <textarea id="flashQ" rows="2" placeholder="Ex: Qual a fórmula da área do retângulo?"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Resposta (verso)</label>
+                <textarea id="flashA" rows="2" placeholder="Ex: base × altura"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Categoria</label>
+                <select id="flashCat">
+                  <option value="matematica">Matemática</option>
+                  <option value="portugues">Português</option>
+                  <option value="historia">História</option>
+                  <option value="ciencias">Ciências</option>
+                  <option value="ingles">Inglês</option>
+                  <option value="outros">Outros</option>
+                </select>
+              </div>
+              <button class="primary-btn" onclick="saveFlashcard()">Salvar cartão</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ANOTAÇÕES -->
+      <section id="anotacoes" class="section">
+        <div class="container">
+          <div id="notesHome">
+            <h2 class="section-title">Minhas Anotações</h2>
+            <p class="section-desc">Escreva e salve suas próprias anotações sobre o que estudou.</p>
+
+            <div class="flash-actions">
+              <button class="primary-btn" onclick="showCreateNote()">+ Nova anotação</button>
+            </div>
+
+            <div id="notesList" class="notes-list"></div>
+          </div>
+
+          <div id="noteEditor" style="display:none">
+            <div class="quiz-header">
+              <button class="back-btn" onclick="closeNoteEditor()">← Voltar</button>
+            </div>
+            <div class="note-form-card">
+              <div class="form-group">
+                <label>Título</label>
+                <input type="text" id="noteTitle" placeholder="Ex: Resumo de Equações" />
+              </div>
+              <div class="form-group">
+                <label>Matéria</label>
+                <select id="noteCat">
+                  <option value="matematica">Matemática</option>
+                  <option value="portugues">Português</option>
+                  <option value="historia">História</option>
+                  <option value="ciencias">Ciências</option>
+                  <option value="ingles">Inglês</option>
+                  <option value="outros">Outros</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Conteúdo</label>
+                <textarea id="noteBody" rows="10" placeholder="Escreva suas anotações aqui..."></textarea>
+              </div>
+              <div class="note-actions">
+                <button class="primary-btn" onclick="saveNote()">Salvar</button>
+                <button class="danger-btn" id="deleteNoteBtn" style="display:none" onclick="deleteNote()">Excluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- POMODORO -->
+      <section id="pomodoro" class="section">
+        <div class="container">
+          <h2 class="section-title">Timer Pomodoro</h2>
+          <p class="section-desc">25 min estudando + 5 min de pausa. Ajuda a manter o foco.</p>
+
+          <div class="pomodoro-card">
+            <div class="pomo-modes">
+              <button class="pomo-mode active" data-mode="focus" onclick="setPomoMode('focus')">Foco (25 min)</button>
+              <button class="pomo-mode" data-mode="short" onclick="setPomoMode('short')">Pausa curta (5 min)</button>
+              <button class="pomo-mode" data-mode="long" onclick="setPomoMode('long')">Pausa longa (15 min)</button>
+            </div>
+
+            <div class="pomo-display" id="pomoDisplay">25:00</div>
+            <div class="pomo-status" id="pomoStatus">Pronto para focar</div>
+
+            <div class="pomo-controls">
+              <button class="pomo-btn start" id="pomoStartBtn" onclick="togglePomo()">▶ Iniciar</button>
+              <button class="pomo-btn reset" onclick="resetPomo()">↺ Resetar</button>
+            </div>
+
+            <div class="pomo-stats">
+              <div class="pomo-stat">
+                <span class="pomo-stat-num" id="pomoSessions">0</span>
+                <span class="pomo-stat-label">Sessões hoje</span>
+              </div>
+              <div class="pomo-stat">
+                <span class="pomo-stat-num" id="pomoTotal">0</span>
+                <span class="pomo-stat-label">Total de pomodoros</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAVORITOS -->
+      <section id="favoritos" class="section">
+        <div class="container">
+          <h2 class="section-title">Meus Favoritos</h2>
+          <div id="favoritesList" class="favorites-list">
+            <p class="empty-msg">Você ainda não favoritou nenhum conteúdo.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PERFIL -->
+      <section id="perfil" class="section">
+        <div class="container">
+          <h2 class="section-title">Meu Perfil</h2>
+
+          <div class="profile-card">
+            <div class="profile-header">
+              <div class="avatar">🎓</div>
+              <div>
+                <h3 id="profileName">Estudante</h3>
+                <p class="profile-sub" id="profileStreakSub">Continue estudando para ganhar medalhas!</p>
+              </div>
+            </div>
+
+            <div class="stats-grid stats-grid-8">
+              <div class="stat-box">
+                <div class="stat-number" id="statExercicios">0</div>
+                <div class="stat-label">Exercícios feitos</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="statAcertos">0</div>
+                <div class="stat-label">Acertos</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="statFavoritos">0</div>
+                <div class="stat-label">Favoritos</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="statPesquisas">0</div>
+                <div class="stat-label">Pesquisas</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="statStreak">0</div>
+                <div class="stat-label">Dias seguidos 🔥</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="statPomodoros">0</div>
+                <div class="stat-label">Pomodoros</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="statNotes">0</div>
+                <div class="stat-label">Anotações</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number" id="statFlash">0</div>
+                <div class="stat-label">Flashcards</div>
+              </div>
+            </div>
+
+            <h3 class="medals-title">Medalhas</h3>
+            <div class="medals" id="medalsArea">
+              <div class="medal locked" id="medal1" title="Faça 5 exercícios">🥉 Iniciante</div>
+              <div class="medal locked" id="medal2" title="Acerte 10 questões">🥈 Dedicado</div>
+              <div class="medal locked" id="medal3" title="Acerte 25 questões">🥇 Expert</div>
+              <div class="medal locked" id="medal4" title="Favorite 5 conteúdos">⭐ Colecionador</div>
+              <div class="medal locked" id="medal5" title="3 dias de sequência">🔥 Consistente</div>
+              <div class="medal locked" id="medal6" title="Complete 10 pomodoros">⏱️ Focado</div>
+            </div>
+          </div>
+
+          <div class="history-card">
+            <h3>Últimas pesquisas</h3>
+            <ul id="historyList" class="history-list">
+              <li class="empty-msg">Nenhuma pesquisa ainda.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>EstudaJá — Feito para ajudar nos estudos 📖</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
